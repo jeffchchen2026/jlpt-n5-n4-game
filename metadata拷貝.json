@@ -1,0 +1,6 @@
+{
+  "name": "日語情境記憶・JLPT N5/N4",
+  "description": "專為手機直向操作設計的 JLPT N5 / N4 日文單字記憶遊戲，透過情境例句填空、句子重組、生活對話二選一與每日分數統計幫助高效記憶。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
