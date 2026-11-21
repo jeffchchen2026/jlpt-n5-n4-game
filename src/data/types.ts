@@ -1,6 +1,31 @@
 export type JlptLevel = 'N5' | 'N4';
 
-export type PartOfSpeech = '名詞' | '動詞' | 'い形容詞' | 'な形容詞' | '副詞';
+export type PartOfSpeech =
+  | '名詞'
+  | '動詞'
+  | 'い形容詞'
+  | 'な形容詞'
+  | '副詞'
+  | '連體・代名詞'
+  | '接續詞'
+  | '數量・時間'
+  | '寒暄・感嘆'
+  | '表現';
+
+export const ALL_PARTS_OF_SPEECH: PartOfSpeech[] = [
+  '名詞',
+  '動詞',
+  'い形容詞',
+  'な形容詞',
+  '副詞',
+  '連體・代名詞',
+  '接續詞',
+  '數量・時間',
+  '寒暄・感嘆',
+  '表現',
+];
+
+export type PosFilter = 'ALL' | PartOfSpeech;
 
 export type DialogueSituation = '購物' | '餐廳' | '問路' | '日常寒暄' | '學校・職場';
 
@@ -67,6 +92,24 @@ export interface VocabEntry {
   dialogue: DialogueScenario;
 }
 
+export interface VocabUnitMeta {
+  id: string;
+  label: string;
+  level: JlptLevel;
+  description: string;
+  entries: VocabEntry[];
+}
+
+export interface WordProgress {
+  vocabId: string;
+  seenCount: number;
+  correctCount: number;
+  wrongCount: number;
+  streak: number;
+  mastered: boolean;
+  lastPracticedAt: string;
+}
+
 export interface MistakeItem {
   vocabId: string;
   exampleIndex: number;
@@ -103,6 +146,9 @@ export interface ScoreState {
 
 export interface UserPreferences {
   levelFilter: LevelFilter;
+  unitFilter: string;
+  posFilter: PosFilter;
+  onlyUnmastered: boolean;
   showKana: boolean;
   showTranslation: boolean;
   speechRate: number;

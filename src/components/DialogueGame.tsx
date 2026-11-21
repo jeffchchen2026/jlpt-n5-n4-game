@@ -59,35 +59,35 @@ export function DialogueGame({
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-5">
-      <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-blue-700">{entry.level}</span>
+    <div className="bg-white border border-slate-200 rounded-2xl p-3.5 sm:p-5 space-y-2.5 sm:space-y-4">
+      <div className="flex items-center justify-between gap-2 text-xs sm:text-sm text-slate-600">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="font-bold text-blue-700">{entry.level}</span>
           <span aria-hidden="true">·</span>
           <span>{dialogue.situation}場景</span>
           <span aria-hidden="true">·</span>
-          <span>情境二選一</span>
+          <span>二選一</span>
         </div>
         <SpeakButton text={dialogue.promptJa} label="聽對方說" rate={speechRate} size="sm" />
       </div>
 
-      <p className="text-sm text-slate-600 leading-relaxed">{dialogue.sceneDescription}</p>
+      <p className="text-sm sm:text-base text-slate-700 leading-snug">{dialogue.sceneDescription}</p>
 
       {/* Speaker Bubble */}
-      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
-        <div className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500">
-          <MessageCircle className="w-3.5 h-3.5 text-blue-600" />
+      <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-1">
+        <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-600">
+          <MessageCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600" />
           <span>對方的話</span>
         </div>
-        <p className="font-jp text-lg sm:text-xl font-semibold text-slate-900 leading-relaxed">
+        <p className="font-jp text-lg sm:text-xl font-semibold text-slate-900 leading-snug">
           {dialogue.promptJa}
         </p>
-        {showKana && <p className="font-jp text-sm text-slate-500">{dialogue.promptKana}</p>}
-        {showTranslation && <p className="text-sm text-slate-600">{dialogue.promptZh}</p>}
+        {showKana && <p className="font-jp text-sm sm:text-base text-slate-700 leading-snug">{dialogue.promptKana}</p>}
+        {showTranslation && <p className="text-sm sm:text-base text-slate-700 leading-snug">{dialogue.promptZh}</p>}
       </div>
 
       {/* Two Large Thumb-Friendly Choice Buttons */}
-      <div className="space-y-3" role="group" aria-label="選擇回應">
+      <div className="space-y-2" role="group" aria-label="選擇回應">
         {choices.map((choice, idx) => {
           const isChosen = selectedIndex === idx;
           let cardClass =
@@ -99,7 +99,7 @@ export function DialogueGame({
             } else if (isChosen) {
               cardClass = 'bg-rose-50 border-rose-400 text-rose-950';
             } else {
-              cardClass = 'bg-slate-50 border-slate-200 text-slate-400';
+              cardClass = 'bg-slate-50 border-slate-200 text-slate-500';
             }
           }
 
@@ -109,29 +109,29 @@ export function DialogueGame({
               type="button"
               disabled={isAnswered}
               onClick={() => handleSelect(idx)}
-              className={`w-full min-h-[64px] p-4 rounded-xl border text-left transition-colors active:scale-[0.99] cursor-pointer disabled:cursor-default space-y-1 ${cardClass}`}
+              className={`w-full min-h-[52px] sm:min-h-[60px] px-3.5 py-2.5 sm:p-3.5 rounded-xl border text-left transition-colors active:scale-[0.99] cursor-pointer disabled:cursor-default space-y-1 ${cardClass}`}
             >
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start justify-between gap-2.5">
                 <span className="font-jp text-base sm:text-lg font-semibold leading-snug">
                   {choice.ja}
                 </span>
                 {isAnswered && choice.isCorrect && (
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 shrink-0 mt-0.5">
+                  <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-emerald-700 shrink-0 mt-0.5">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>自然適切</span>
                   </span>
                 )}
                 {isAnswered && isChosen && !choice.isCorrect && (
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-rose-700 shrink-0 mt-0.5">
+                  <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-rose-700 shrink-0 mt-0.5">
                     <XCircle className="w-4 h-4" />
                     <span>不恰當</span>
                   </span>
                 )}
               </div>
 
-              {showKana && <div className="font-jp text-xs opacity-80">{choice.kana}</div>}
+              {showKana && <div className="font-jp text-xs sm:text-sm text-slate-700 opacity-90 leading-snug">{choice.kana}</div>}
               {isAnswered && (
-                <div className="text-sm opacity-90 pt-1 border-t border-black/10">
+                <div className="text-sm sm:text-base opacity-95 pt-1 border-t border-black/10">
                   {choice.zh}
                 </div>
               )}
@@ -141,15 +141,15 @@ export function DialogueGame({
       </div>
 
       {isAnswered && (
-        <div className="pt-3 border-t border-slate-200 space-y-4">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+        <div className="pt-2.5 sm:pt-3 border-t border-slate-200 space-y-3">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-baseline gap-2">
-                <span className="font-jp text-base font-bold text-slate-900">{entry.kanji}</span>
+              <div className="flex flex-wrap items-baseline gap-2">
+                <span className="font-jp text-lg sm:text-xl font-bold text-slate-900">{entry.kanji}</span>
                 {showKana && entry.kanji !== entry.kana && (
-                  <span className="font-jp text-sm text-slate-500">{entry.kana}</span>
+                  <span className="font-jp text-sm sm:text-base text-slate-700">{entry.kana}</span>
                 )}
-                <span className="text-sm font-medium text-blue-700">{entry.meaning}</span>
+                <span className="text-sm sm:text-base font-semibold text-blue-700">{entry.meaning}</span>
               </div>
               <SpeakButton
                 text={dialogue.correctOption.ja}
@@ -160,18 +160,18 @@ export function DialogueGame({
             </div>
 
             <div className="space-y-1">
-              <div className="text-xs font-semibold text-blue-700">使用時機與禮貌程度說明</div>
-              <p className="text-sm text-slate-700 leading-relaxed">{dialogue.politenessNote}</p>
+              <div className="text-xs sm:text-sm font-semibold text-blue-700">使用時機與禮貌程度說明</div>
+              <p className="text-sm sm:text-base text-slate-800 leading-relaxed">{dialogue.politenessNote}</p>
             </div>
           </div>
 
           <button
             type="button"
             onClick={onNext}
-            className="w-full min-h-[50px] px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base flex items-center justify-center gap-2 transition-colors active:scale-[0.99] cursor-pointer"
+            className="w-full min-h-[48px] sm:min-h-[52px] px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base sm:text-lg flex items-center justify-center gap-2 transition-colors active:scale-[0.99] cursor-pointer"
           >
             <span>下一題</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-5 h-5" />
           </button>
         </div>
       )}

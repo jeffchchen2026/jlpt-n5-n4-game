@@ -5,12 +5,15 @@ import {
   ModeScoreBreakdown,
   ScoreState,
   UserPreferences,
+  VocabEntry,
+  WordProgress,
 } from '../data/types';
 
 const KEYS = {
   PREFS: 'jlpt_memo_prefs_v1',
   MISTAKES: 'jlpt_memo_mistakes_v1',
   SCORES: 'jlpt_memo_scores_v1',
+  PROGRESS: 'jlpt_memo_progress_v1',
 };
 
 export const BASE_POINTS: Record<GameMode | 'mistakeReview', number> = {
@@ -66,6 +69,9 @@ export function createEmptyDailyRecord(dateKey: string, goalTarget: number): Dai
 
 const DEFAULT_PREFS: UserPreferences = {
   levelFilter: 'ALL',
+  unitFilter: 'ALL',
+  posFilter: 'ALL',
+  onlyUnmastered: false,
   showKana: true,
   showTranslation: true,
   speechRate: 0.92,
@@ -346,4 +352,125 @@ export function getRecordedDaysHistory(state: ScoreState): DailyRecord[] {
     records[today] = createEmptyDailyRecord(today, state.dailyGoal);
   }
   return Object.values(records).sort((a, b) => b.date.localeCompare(a.date));
+}
+
+export function loadWordProgress(): Record<string, WordProgress> {
+  try {
+    const raw = localStorage.getItem(KEYS.PROGRESS);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export function saveWordProgress(progress: Record<string, WordProgress>): void {
+  try {
+    localStorage.setItem(KEYS.PROGRESS, JSON.stringify(progress));
+  } catch {
+    // Ignore quota errors
+  }
+}
+
+export function recordWordProgressAttempt(
+  current: Record<string, WordProgress>,
+  vocabId: string,
+  isCorrect: boolean
+): Record<string, WordProgress> {
+  const prev = current[vocabId];
+  const nextStreak = isCorrect ? (prev?.streak ?? 0) + 1 : 0;
+  const updated: WordProgress = {
+    vocabId,
+    seenCount: (prev?.seenCount ?? 0) + 1,
+    correctCount: (prev?.correctCount ?? 0) + (isCorrect ? 1 : 0),
+    wrongCount: (prev?.wrongCount ?? 0) + (isCorrect ? 0 : 1),
+    streak: nextStreak,
+    mastered: isCorrect ? prev?.mastered || nextStreak >= 2 : false,
+    lastPracticedAt: new Date().toISOString(),
+  };
+
+  const next = {
+    ...current,
+    [vocabId]: updated,
+  };
+  saveWordProgress(next);
+  return next;
+}
+
+export function resetProgressForIds(
+  current: Record<string, WordProgress>,
+  vocabIds: string[]
+): Record<string, WordProgress> {
+  const idSet = new Set(vocabIds);
+  const next: Record<string, WordProgress> = {};
+  for (const [key, val] of Object.entries(current)) {
+    if (!idSet.has(key)) {
+      next[key] = val;
+    }
+  }
+  saveWordProgress(next);
+  return next;
+}
+
+export interface UnitMasterySummary {
+  total: number;
+  practiced: number;
+  mastered: number;
+  percent: number;
+}
+
+export function getUnitMasterySummary(
+  entries: VocabEntry[],
+  progress: Record<string, WordProgress>
+): UnitMasterySummary {
+  const total = entries.length;
+  let practiced = 0;
+  let mastered = 0;
+  for (const entry of entries) {
+    const p = progress[entry.id];
+    if (p && p.seenCount > 0) practiced += 1;
+    if (p && p.mastered) mastered += 1;
+  }
+  const percent = total > 0 ? Math.round((mastered / total) * 100) : 0;
+  return { total, practiced, mastered, percent };
+}
+
+function shuffleStrings(list: string[]): string[] {
+  const arr = [...list];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+export function buildPrioritizedDeckIds(
+  entries: VocabEntry[],
+  progress: Record<string, WordProgress>,
+  onlyUnmastered: boolean
+): string[] {
+  const unseenOrReset: string[] = [];
+  const inProgress: string[] = [];
+  const mastered: string[] = [];
+
+  for (const entry of entries) {
+    const p = progress[entry.id];
+    if (!p || p.streak === 0) {
+      unseenOrReset.push(entry.id);
+    } else if (!p.mastered) {
+      inProgress.push(entry.id);
+    } else {
+      mastered.push(entry.id);
+    }
+  }
+
+  if (onlyUnmastered) {
+    return [...shuffleStrings(unseenOrReset), ...shuffleStrings(inProgress)];
+  }
+  return [
+    ...shuffleStrings(unseenOrReset),
+    ...shuffleStrings(inProgress),
+    ...shuffleStrings(mastered),
+  ];
 }

@@ -37,7 +37,7 @@ export function SpeakButton({
   };
 
   const sizeClasses =
-    size === 'sm' ? 'min-h-[40px] px-3 py-1.5 text-xs' : 'min-h-[44px] px-4 py-2 text-sm';
+    size === 'sm' ? 'min-h-[42px] px-3.5 py-2 text-sm' : 'min-h-[48px] px-4 py-2.5 text-base';
 
   const colorClasses =
     variant === 'primary'

@@ -63,14 +63,14 @@ export function ClozeGame({
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 space-y-5">
-      <div className="flex items-center justify-between gap-2 text-xs text-slate-500">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-blue-700">{entry.level}</span>
+    <div className="bg-white border border-slate-200 rounded-2xl p-3.5 sm:p-5 space-y-3 sm:space-y-4">
+      <div className="flex items-center justify-between gap-2 text-xs sm:text-sm text-slate-600">
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="font-bold text-blue-700">{entry.level}</span>
           <span aria-hidden="true">·</span>
           <span>{entry.pos}</span>
           <span aria-hidden="true">·</span>
-          <span>情境句子填空</span>
+          <span>情境填空</span>
         </div>
         <SpeakButton
           text={example.japanese}
@@ -80,13 +80,13 @@ export function ClozeGame({
         />
       </div>
 
-      <div className="space-y-3 py-2">
-        <p className="font-jp text-xl sm:text-2xl leading-relaxed font-medium text-slate-900">
+      <div className="space-y-1.5 sm:space-y-2.5 py-0.5 sm:py-1">
+        <p className="font-jp text-[19px] sm:text-2xl leading-snug font-medium text-slate-900">
           <span>{example.cloze.before}</span>
           <span
-            className={`inline-block min-w-[4.5rem] px-2.5 py-0.5 mx-1 rounded-lg border text-center font-bold transition-colors ${
+            className={`inline-block min-w-[3.75rem] sm:min-w-[4.5rem] px-2 py-0.5 mx-1 rounded-lg border text-center font-bold transition-colors ${
               !isAnswered
-                ? 'bg-slate-100 border-slate-300 text-slate-400'
+                ? 'bg-slate-100 border-slate-300 text-slate-500'
                 : isCorrect
                   ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
                   : 'bg-blue-50 border-blue-300 text-blue-800'
@@ -98,13 +98,13 @@ export function ClozeGame({
         </p>
 
         {showKana && (
-          <p className="font-jp text-sm text-slate-500 leading-relaxed">
+          <p className="font-jp text-sm sm:text-base text-slate-700 leading-snug">
             {isAnswered ? (
               example.kana
             ) : (
               <>
                 <span>{example.cloze.kanaBefore}</span>
-                <span className="inline-block px-1.5 mx-0.5 rounded bg-slate-100 text-slate-400">
+                <span className="inline-block px-1 mx-0.5 rounded bg-slate-100 text-slate-500">
                   ＿＿＿
                 </span>
                 <span>{example.cloze.kanaAfter}</span>
@@ -114,14 +114,14 @@ export function ClozeGame({
         )}
 
         {showTranslation && (
-          <p className="text-sm text-slate-600 leading-relaxed flex items-start gap-1.5">
-            <HelpCircle className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+          <p className="text-sm sm:text-base text-slate-700 leading-snug flex items-start gap-1.5">
+            <HelpCircle className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500 shrink-0 mt-0.5" />
             <span>{example.translation}</span>
           </p>
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-2 sm:gap-3">
         {options.map((opt) => {
           const isTarget = opt === example.cloze.blankWord;
           const isChosen = opt === selectedOption;
@@ -130,11 +130,11 @@ export function ClozeGame({
             'bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100 hover:border-slate-300';
           if (isAnswered) {
             if (isTarget) {
-              btnStyle = 'bg-emerald-50 border-emerald-400 text-emerald-900 font-bold';
+              btnStyle = 'bg-emerald-50 border-emerald-400 text-emerald-950 font-bold';
             } else if (isChosen) {
-              btnStyle = 'bg-rose-50 border-rose-400 text-rose-900';
+              btnStyle = 'bg-rose-50 border-rose-400 text-rose-950';
             } else {
-              btnStyle = 'bg-white border-slate-100 text-slate-400';
+              btnStyle = 'bg-white border-slate-200 text-slate-500';
             }
           }
 
@@ -144,19 +144,19 @@ export function ClozeGame({
               type="button"
               disabled={isAnswered}
               onClick={() => handleSelect(opt)}
-              className={`min-h-[54px] px-4 py-3 rounded-xl border text-base sm:text-lg font-jp font-medium flex items-center justify-between gap-2 transition-colors active:scale-[0.99] cursor-pointer disabled:cursor-default ${btnStyle}`}
+              className={`min-h-[48px] sm:min-h-[54px] px-3 sm:px-4 py-2 rounded-xl border text-[17px] sm:text-lg font-jp font-medium flex items-center justify-between gap-1.5 text-left leading-snug transition-colors active:scale-[0.99] cursor-pointer disabled:cursor-default ${btnStyle}`}
             >
-              <span>{opt}</span>
+              <span className="break-all">{opt}</span>
               {isAnswered && isTarget && (
-                <span className="inline-flex items-center gap-1 text-xs font-sans font-semibold text-emerald-700 shrink-0">
+                <span className="inline-flex items-center gap-0.5 text-xs sm:text-sm font-sans font-semibold text-emerald-700 shrink-0">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>正確</span>
+                  <span className="hidden sm:inline">正確</span>
                 </span>
               )}
               {isAnswered && isChosen && !isTarget && (
-                <span className="inline-flex items-center gap-1 text-xs font-sans font-semibold text-rose-700 shrink-0">
+                <span className="inline-flex items-center gap-0.5 text-xs sm:text-sm font-sans font-semibold text-rose-700 shrink-0">
                   <XCircle className="w-4 h-4" />
-                  <span>誤答</span>
+                  <span className="hidden sm:inline">誤答</span>
                 </span>
               )}
             </button>
@@ -165,15 +165,15 @@ export function ClozeGame({
       </div>
 
       {isAnswered && (
-        <div className="pt-3 border-t border-slate-200 space-y-4">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+        <div className="pt-2.5 sm:pt-3 border-t border-slate-200 space-y-3">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-baseline gap-2">
-                <span className="font-jp text-lg font-bold text-slate-900">{entry.kanji}</span>
+                <span className="font-jp text-lg sm:text-xl font-bold text-slate-900">{entry.kanji}</span>
                 {showKana && entry.kanji !== entry.kana && (
-                  <span className="font-jp text-sm text-slate-600">{entry.kana}</span>
+                  <span className="font-jp text-sm sm:text-base text-slate-700">{entry.kana}</span>
                 )}
-                <span className="text-sm font-medium text-blue-700">{entry.meaning}</span>
+                <span className="text-sm sm:text-base font-semibold text-blue-700">{entry.meaning}</span>
               </div>
               <SpeakButton
                 text={entry.kana}
@@ -183,18 +183,10 @@ export function ClozeGame({
               />
             </div>
 
-            <div className="text-xs text-slate-500">
-              <span>情境小卡</span>
-              <span aria-hidden="true"> · </span>
-              <span>{entry.level}</span>
-              <span aria-hidden="true"> · </span>
-              <span>{entry.pos}</span>
-            </div>
-
-            <p className="text-sm text-slate-700 leading-relaxed">{entry.usageNote}</p>
+            <p className="text-sm sm:text-base text-slate-800 leading-relaxed">{entry.usageNote}</p>
 
             {!showTranslation && (
-              <p className="text-sm text-slate-600 pt-1 border-t border-slate-200/70">
+              <p className="text-sm sm:text-base text-slate-700 pt-1.5 border-t border-slate-200/70">
                 中文翻譯：{example.translation}
               </p>
             )}
@@ -203,10 +195,10 @@ export function ClozeGame({
           <button
             type="button"
             onClick={onNext}
-            className="w-full min-h-[50px] px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base flex items-center justify-center gap-2 transition-colors active:scale-[0.99] cursor-pointer"
+            className="w-full min-h-[48px] sm:min-h-[52px] px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base sm:text-lg flex items-center justify-center gap-2 transition-colors active:scale-[0.99] cursor-pointer"
           >
             <span>{isReviewMode ? '下一道複習題' : '下一題'}</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-5 h-5" />
           </button>
         </div>
       )}
