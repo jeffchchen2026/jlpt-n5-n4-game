@@ -2,13 +2,17 @@ import { LevelFilter, PosFilter, VocabEntry, VocabUnitMeta } from '../types';
 import { N4_PART_1 } from './n4_part1';
 import { N4_PART_2 } from './n4_part2';
 import { N4_PART_3 } from './n4_part3';
+import { N4_PART_4 } from './n4_part4';
+import { N4_PART_5 } from './n4_part5';
 import { N5_PART_1 } from './n5_part1';
 import { N5_PART_2 } from './n5_part2';
 import { N5_PART_3 } from './n5_part3';
+import { N5_PART_4 } from './n5_part4';
+import { N5_PART_5 } from './n5_part5';
 
 /**
  * 模組化單字單元註冊表：
- * 未來擴充更多 N5 / N4 單字時，只需新增批次檔案（如 n5_part4.ts）
+ * 未來擴充更多 N5 / N4 單字時，只需新增批次檔案（如 n5_part6.ts）
  * 並匯入加入此陣列即可自動納入題庫、發音、單元篩選、進度記錄與自動驗證腳本。
  */
 export const VOCAB_UNITS: VocabUnitMeta[] = [
@@ -30,8 +34,22 @@ export const VOCAB_UNITS: VocabUnitMeta[] = [
     id: 'n5_part3',
     label: 'N5 單元 3・代名詞・接續詞與寒暄',
     level: 'N5',
-    description: '擴充示範：指示詞、數量疑問、常用禮貌表現',
+    description: '指示詞、數量疑問、常用禮貌表現',
     entries: N5_PART_3,
+  },
+  {
+    id: 'n5_part4',
+    label: 'N5 單元 4・家庭人物與日常名詞',
+    level: 'N5',
+    description: '擴充批次 1：家人稱謂、公共場所與日常用品',
+    entries: N5_PART_4,
+  },
+  {
+    id: 'n5_part5',
+    label: 'N5 單元 5・基礎動作與生活動詞',
+    level: 'N5',
+    description: '擴充批次 1：開關、移動、借還與生活核心動詞',
+    entries: N5_PART_5,
   },
   {
     id: 'n4_part1',
@@ -51,8 +69,22 @@ export const VOCAB_UNITS: VocabUnitMeta[] = [
     id: 'n4_part3',
     label: 'N4 單元 3・接續・職場寒暄與表現',
     level: 'N4',
-    description: '擴充示範：連體詞、時間長度與道地對話表現',
+    description: '連體詞、時間長度與道地對話表現',
     entries: N4_PART_3,
+  },
+  {
+    id: 'n4_part4',
+    label: 'N4 單元 4・日常事務與思考動詞',
+    level: 'N4',
+    description: '擴充批次 1：溝通確認、自他動詞與人際互動動詞',
+    entries: N4_PART_4,
+  },
+  {
+    id: 'n4_part5',
+    label: 'N4 單元 5・生活環境與狀態形容',
+    level: 'N4',
+    description: '擴充批次 1：社會場所名詞與情緒狀態形容詞',
+    entries: N4_PART_5,
   },
 ];
 
