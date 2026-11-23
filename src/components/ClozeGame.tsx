@@ -178,23 +178,23 @@ export function ClozeGame({
         })}
       </div>
 
-      {/* Expanded Explanation Section: Target word + Grammar point + All 4 option meanings */}
+      {/* Expanded Explanation Section: Target word + Grammar point + 3 distractor meanings */}
       {isAnswered && (
         <div className="pt-2.5 sm:pt-3 border-t border-slate-200 space-y-3">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-3">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 sm:p-4 space-y-3">
             {/* Target word header & usage */}
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-wrap items-baseline gap-2">
-                  <span className="font-jp text-lg sm:text-xl font-bold text-slate-900">
+                  <span className="font-jp text-[19px] sm:text-2xl font-bold text-slate-900">
                     {entry.kanji}
                   </span>
                   {entry.kanji !== entry.kana && (
-                    <span className="font-jp text-sm sm:text-base text-slate-700">
+                    <span className="font-jp text-[17px] sm:text-xl text-slate-700">
                       {entry.kana}
                     </span>
                   )}
-                  <span className="text-sm sm:text-base font-semibold text-blue-700">
+                  <span className="text-[17px] sm:text-xl font-semibold text-blue-700">
                     {entry.meaning}
                   </span>
                 </div>
@@ -206,12 +206,12 @@ export function ClozeGame({
                 />
               </div>
 
-              <p className="text-sm sm:text-base text-slate-800 leading-relaxed">
+              <p className="text-[17px] sm:text-lg text-slate-800 leading-relaxed">
                 {entry.usageNote}
               </p>
 
               {!showTranslation && (
-                <p className="text-sm sm:text-base text-slate-700 pt-1">
+                <p className="text-[17px] sm:text-lg text-slate-700 pt-1">
                   中文翻譯：{example.translation}
                 </p>
               )}
@@ -219,23 +219,23 @@ export function ClozeGame({
 
             {/* Sentence grammar point */}
             {example.scramble.grammarTip && (
-              <div className="bg-blue-50/70 border border-blue-200/80 rounded-lg px-3 py-2 space-y-0.5">
-                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-blue-900">
-                  <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-700 shrink-0" />
+              <div className="bg-blue-50/70 border border-blue-200/80 rounded-lg px-3.5 py-2.5 space-y-1">
+                <div className="flex items-center gap-1.5 text-base sm:text-lg font-bold text-blue-900">
+                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-blue-700 shrink-0" />
                   <span>本句文法重點</span>
                 </div>
-                <p className="text-sm sm:text-base text-slate-800 leading-snug">
+                <p className="text-[17px] sm:text-lg text-slate-800 leading-relaxed">
                   {example.scramble.grammarTip}
                 </p>
               </div>
             )}
 
             {/* 3 distractor options breakdown (excluding correct answer) */}
-            <div className="space-y-1.5 pt-1 border-t border-slate-200/80">
-              <p className="text-xs sm:text-sm font-bold text-slate-700">
+            <div className="space-y-2 pt-1.5 border-t border-slate-200/80">
+              <p className="text-base sm:text-lg font-bold text-slate-800">
                 其他三個選項說明
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-2">
+              <div className="grid grid-cols-1 gap-2">
                 {options
                   .filter((opt) => opt.surface !== example.cloze.blankWord)
                   .map((opt) => {
@@ -244,28 +244,28 @@ export function ClozeGame({
                     return (
                       <div
                         key={opt.surface}
-                        className={`rounded-lg border px-2.5 py-2 text-sm leading-snug ${
+                        className={`rounded-lg border px-3 py-2.5 leading-snug flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 ${
                           isChosen
                             ? 'bg-rose-50/80 border-rose-300 text-rose-950'
                             : 'bg-white border-slate-200 text-slate-800'
                         }`}
                       >
-                        <div className="flex items-baseline justify-between gap-2">
-                          <div className="flex flex-wrap items-baseline gap-1 font-jp">
-                            <span className="font-bold text-slate-900">{opt.kana}</span>
-                            {opt.surface !== opt.kana && (
-                              <span className="text-xs sm:text-sm text-slate-600">
-                                （{opt.surface}）
-                              </span>
-                            )}
-                          </div>
+                        <div className="flex flex-wrap items-baseline gap-1.5 font-jp">
+                          <span className="text-[18px] sm:text-xl font-bold text-slate-900">
+                            {opt.kana}
+                          </span>
+                          {opt.surface !== opt.kana && (
+                            <span className="text-base sm:text-lg text-slate-600">
+                              （{opt.surface}）
+                            </span>
+                          )}
                           {isChosen && (
-                            <span className="text-xs font-bold text-rose-700 shrink-0">
-                              誤選
+                            <span className="text-sm sm:text-base font-sans font-bold text-rose-700">
+                              · 誤選
                             </span>
                           )}
                         </div>
-                        <p className="text-xs sm:text-sm text-slate-700 mt-0.5">
+                        <p className="text-[17px] sm:text-lg text-slate-800 font-medium">
                           {opt.meaning}
                         </p>
                       </div>

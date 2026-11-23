@@ -142,14 +142,14 @@ export function DialogueGame({
 
       {isAnswered && (
         <div className="pt-2.5 sm:pt-3 border-t border-slate-200 space-y-3">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-2">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 sm:p-4 space-y-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-baseline gap-2">
-                <span className="font-jp text-lg sm:text-xl font-bold text-slate-900">{entry.kanji}</span>
+                <span className="font-jp text-[19px] sm:text-2xl font-bold text-slate-900">{entry.kanji}</span>
                 {showKana && entry.kanji !== entry.kana && (
-                  <span className="font-jp text-sm sm:text-base text-slate-700">{entry.kana}</span>
+                  <span className="font-jp text-[17px] sm:text-xl text-slate-700">{entry.kana}</span>
                 )}
-                <span className="text-sm sm:text-base font-semibold text-blue-700">{entry.meaning}</span>
+                <span className="text-[17px] sm:text-xl font-semibold text-blue-700">{entry.meaning}</span>
               </div>
               <SpeakButton
                 text={dialogue.correctOption.ja}
@@ -160,8 +160,8 @@ export function DialogueGame({
             </div>
 
             <div className="space-y-1">
-              <div className="text-xs sm:text-sm font-semibold text-blue-700">使用時機與禮貌程度說明</div>
-              <p className="text-sm sm:text-base text-slate-800 leading-relaxed">{dialogue.politenessNote}</p>
+              <div className="text-base sm:text-lg font-bold text-blue-700">使用時機與禮貌程度說明</div>
+              <p className="text-[17px] sm:text-lg text-slate-800 leading-relaxed">{dialogue.politenessNote}</p>
             </div>
           </div>
 

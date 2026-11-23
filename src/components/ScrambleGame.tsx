@@ -278,9 +278,9 @@ export function ScrambleGame({
 
           {phase === 'solved' && (
             <div className="pt-2.5 sm:pt-3 border-t border-slate-200 space-y-3">
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-2">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 sm:p-4 space-y-2.5">
                 <div className="flex items-center justify-between gap-2">
-                  <div className="inline-flex items-center gap-1.5 text-sm sm:text-base font-bold text-emerald-700">
+                  <div className="inline-flex items-center gap-1.5 text-base sm:text-lg font-bold text-emerald-700">
                     <CheckCircle2 className="w-5 h-5" />
                     <span>完成句子！</span>
                   </div>
@@ -293,14 +293,14 @@ export function ScrambleGame({
                 </div>
 
                 <div className="space-y-1">
-                  <p className="font-jp text-lg sm:text-xl font-bold text-slate-900">{example.japanese}</p>
-                  {showKana && <p className="font-jp text-sm sm:text-base text-slate-700">{example.kana}</p>}
-                  <p className="text-sm sm:text-base text-slate-800">{example.translation}</p>
+                  <p className="font-jp text-[19px] sm:text-2xl font-bold text-slate-900">{example.japanese}</p>
+                  {showKana && <p className="font-jp text-base sm:text-lg text-slate-700">{example.kana}</p>}
+                  <p className="text-[17px] sm:text-lg text-slate-800">{example.translation}</p>
                 </div>
 
                 <div className="pt-2 border-t border-slate-200/80 space-y-1">
-                  <div className="text-xs sm:text-sm font-semibold text-blue-700">句型・助詞重點</div>
-                  <p className="text-sm sm:text-base text-slate-800 leading-relaxed">
+                  <div className="text-base sm:text-lg font-bold text-blue-700">句型・助詞重點</div>
+                  <p className="text-[17px] sm:text-lg text-slate-800 leading-relaxed">
                     {example.scramble.grammarTip}
                   </p>
                 </div>
