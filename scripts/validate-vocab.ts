@@ -1,8 +1,10 @@
+import { getBlankWordKana, resolveClozeOptionInfo } from '../src/data/clozeGlossary';
 import { ALL_PARTS_OF_SPEECH } from '../src/data/types';
-import { ALL_VOCAB, VOCAB_UNITS } from '../src/data/vocab';
+import { ALL_VOCAB, VOCAB_BY_KANJI, VOCAB_UNITS } from '../src/data/vocab';
 
 const ALLOWED_POS = new Set<string>(ALL_PARTS_OF_SPEECH);
 const ALLOWED_SITUATIONS = new Set<string>(['購物', '餐廳', '問路', '日常寒暄', '學校・職場']);
+const KANJI_REGEX = /[\u4E00-\u9FFF々]/;
 
 const errors: string[] = [];
 const seenIds = new Set<string>();
@@ -81,6 +83,23 @@ for (const unit of VOCAB_UNITS) {
           const optSet = new Set([blankWord, ...distractors]);
           if (optSet.size !== 4) {
             fail(exCtx, `cloze 選項重複（含正確答案應有 4 個相異選項）：[${[blankWord, ...distractors].join(', ')}]`);
+          }
+          const blankKana = getBlankWordKana(ex);
+          const resolved = [
+            { surface: blankWord, kana: blankKana, meaning: entry.meaning },
+            ...distractors.map((d) => resolveClozeOptionInfo(d, VOCAB_BY_KANJI)),
+          ];
+          for (const opt of resolved) {
+            if (KANJI_REGEX.test(opt.kana)) {
+              fail(exCtx, `cloze 選項「${opt.surface}」未轉換為純假名（仍含漢字：${opt.kana}）`);
+            }
+            if (opt.meaning === '干擾選項') {
+              fail(exCtx, `cloze 選項「${opt.surface}」缺少 clozeGlossary 簡短說明`);
+            }
+          }
+          const kanaSet = new Set(resolved.map((r) => r.kana));
+          if (kanaSet.size !== 4) {
+            fail(exCtx, `cloze 選項轉為假名後出現同音重複：[${resolved.map((r) => r.kana).join(', ')}]`);
           }
         }
 

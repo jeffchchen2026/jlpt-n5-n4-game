@@ -102,6 +102,10 @@ export const VOCAB_BY_ID: Record<string, VocabEntry> = Object.fromEntries(
   ALL_VOCAB.map((item) => [item.id, item])
 );
 
+export const VOCAB_BY_KANJI: Record<string, VocabEntry> = Object.fromEntries(
+  ALL_VOCAB.map((item) => [item.kanji, item])
+);
+
 export function getUnitsForLevel(levelFilter: LevelFilter): VocabUnitMeta[] {
   if (levelFilter === 'ALL') return VOCAB_UNITS;
   return VOCAB_UNITS.filter((unit) => unit.level === levelFilter);

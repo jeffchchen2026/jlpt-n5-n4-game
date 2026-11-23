@@ -344,7 +344,7 @@ export default function App() {
             <div className="flex items-center gap-2 text-sm sm:text-base font-semibold text-emerald-950 leading-snug">
               <CheckCircle2 className="w-5 h-5 text-emerald-700 shrink-0" />
               <span>
-                恭喜達成今日目標積分（{scoreState.dailyGoal} 分）！繼續保持連擊吧。
+                恭喜達成今日目標積分（{scoreState.dailyGoal} 分）！繼續保持練習吧。
               </span>
             </div>
             <button

@@ -1,6 +1,12 @@
-import { ArrowRight, CheckCircle2, HelpCircle, XCircle } from 'lucide-react';
+import { ArrowRight, BookOpen, CheckCircle2, HelpCircle, XCircle } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import {
+  ClozeOptionInfo,
+  getBlankWordKana,
+  resolveClozeOptionInfo,
+} from '../data/clozeGlossary';
 import { VocabEntry } from '../data/types';
+import { VOCAB_BY_KANJI } from '../data/vocab';
 import { speakJapanese } from '../utils/speech';
 import { SpeakButton } from './SpeakButton';
 
@@ -37,24 +43,31 @@ export function ClozeGame({
   onNext,
 }: ClozeGameProps) {
   const example = entry.examples[exampleIndex] ?? entry.examples[0];
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [selectedSurface, setSelectedSurface] = useState<string | null>(null);
 
-  const options = useMemo(() => {
-    const all = [example.cloze.blankWord, ...example.cloze.distractors];
-    return shuffleArray(all);
-  }, [entry.id, exampleIndex, example]);
+  const options: ClozeOptionInfo[] = useMemo(() => {
+    const targetOption: ClozeOptionInfo = {
+      surface: example.cloze.blankWord,
+      kana: getBlankWordKana(example),
+      meaning: entry.meaning,
+    };
+    const distractorOptions = example.cloze.distractors.map((d) =>
+      resolveClozeOptionInfo(d, VOCAB_BY_KANJI)
+    );
+    return shuffleArray([targetOption, ...distractorOptions]);
+  }, [entry.id, entry.meaning, exampleIndex, example]);
 
   useEffect(() => {
-    setSelectedOption(null);
+    setSelectedSurface(null);
   }, [entry.id, exampleIndex]);
 
-  const isAnswered = selectedOption !== null;
-  const isCorrect = selectedOption === example.cloze.blankWord;
+  const isAnswered = selectedSurface !== null;
+  const isCorrect = selectedSurface === example.cloze.blankWord;
 
-  const handleSelect = (opt: string) => {
+  const handleSelect = (opt: ClozeOptionInfo) => {
     if (isAnswered) return;
-    setSelectedOption(opt);
-    if (opt === example.cloze.blankWord) {
+    setSelectedSurface(opt.surface);
+    if (opt.surface === example.cloze.blankWord) {
       onCorrect();
       speakJapanese(example.japanese, { rate: speechRate });
     } else {
@@ -80,7 +93,7 @@ export function ClozeGame({
         />
       </div>
 
-      <div className="space-y-1.5 sm:space-y-2.5 py-0.5 sm:py-1">
+      <div className="space-y-1.5 sm:space-y-2 py-0.5">
         <p className="font-jp text-[19px] sm:text-2xl leading-snug font-medium text-slate-900">
           <span>{example.cloze.before}</span>
           <span
@@ -121,10 +134,11 @@ export function ClozeGame({
         )}
       </div>
 
+      {/* Options strictly rendered in kana (no Kanji) */}
       <div className="grid grid-cols-2 gap-2 sm:gap-3">
         {options.map((opt) => {
-          const isTarget = opt === example.cloze.blankWord;
-          const isChosen = opt === selectedOption;
+          const isTarget = opt.surface === example.cloze.blankWord;
+          const isChosen = opt.surface === selectedSurface;
 
           let btnStyle =
             'bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100 hover:border-slate-300';
@@ -140,13 +154,13 @@ export function ClozeGame({
 
           return (
             <button
-              key={opt}
+              key={opt.surface}
               type="button"
               disabled={isAnswered}
               onClick={() => handleSelect(opt)}
               className={`min-h-[48px] sm:min-h-[54px] px-3 sm:px-4 py-2 rounded-xl border text-[17px] sm:text-lg font-jp font-medium flex items-center justify-between gap-1.5 text-left leading-snug transition-colors active:scale-[0.99] cursor-pointer disabled:cursor-default ${btnStyle}`}
             >
-              <span className="break-all">{opt}</span>
+              <span className="break-all">{opt.kana}</span>
               {isAnswered && isTarget && (
                 <span className="inline-flex items-center gap-0.5 text-xs sm:text-sm font-sans font-semibold text-emerald-700 shrink-0">
                   <CheckCircle2 className="w-4 h-4" />
@@ -164,32 +178,107 @@ export function ClozeGame({
         })}
       </div>
 
+      {/* Expanded Explanation Section: Target word + Grammar point + All 4 option meanings */}
       {isAnswered && (
         <div className="pt-2.5 sm:pt-3 border-t border-slate-200 space-y-3">
-          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex flex-wrap items-baseline gap-2">
-                <span className="font-jp text-lg sm:text-xl font-bold text-slate-900">{entry.kanji}</span>
-                {showKana && entry.kanji !== entry.kana && (
-                  <span className="font-jp text-sm sm:text-base text-slate-700">{entry.kana}</span>
-                )}
-                <span className="text-sm sm:text-base font-semibold text-blue-700">{entry.meaning}</span>
+          <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 sm:p-4 space-y-3">
+            {/* Target word header & usage */}
+            <div className="space-y-1.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="font-jp text-lg sm:text-xl font-bold text-slate-900">
+                    {entry.kanji}
+                  </span>
+                  {entry.kanji !== entry.kana && (
+                    <span className="font-jp text-sm sm:text-base text-slate-700">
+                      {entry.kana}
+                    </span>
+                  )}
+                  <span className="text-sm sm:text-base font-semibold text-blue-700">
+                    {entry.meaning}
+                  </span>
+                </div>
+                <SpeakButton
+                  text={entry.kana}
+                  label="單字發音"
+                  rate={speechRate}
+                  size="sm"
+                />
               </div>
-              <SpeakButton
-                text={entry.kana}
-                label="單字發音"
-                rate={speechRate}
-                size="sm"
-              />
+
+              <p className="text-sm sm:text-base text-slate-800 leading-relaxed">
+                {entry.usageNote}
+              </p>
+
+              {!showTranslation && (
+                <p className="text-sm sm:text-base text-slate-700 pt-1">
+                  中文翻譯：{example.translation}
+                </p>
+              )}
             </div>
 
-            <p className="text-sm sm:text-base text-slate-800 leading-relaxed">{entry.usageNote}</p>
-
-            {!showTranslation && (
-              <p className="text-sm sm:text-base text-slate-700 pt-1.5 border-t border-slate-200/70">
-                中文翻譯：{example.translation}
-              </p>
+            {/* Sentence grammar point */}
+            {example.scramble.grammarTip && (
+              <div className="bg-blue-50/70 border border-blue-200/80 rounded-lg px-3 py-2 space-y-0.5">
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-blue-900">
+                  <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-700 shrink-0" />
+                  <span>本句文法重點</span>
+                </div>
+                <p className="text-sm sm:text-base text-slate-800 leading-snug">
+                  {example.scramble.grammarTip}
+                </p>
+              </div>
             )}
+
+            {/* All 4 options breakdown */}
+            <div className="space-y-1.5 pt-1 border-t border-slate-200/80">
+              <p className="text-xs sm:text-sm font-bold text-slate-700">
+                四個選項說明
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+                {options.map((opt) => {
+                  const isTarget = opt.surface === example.cloze.blankWord;
+                  const isChosen = opt.surface === selectedSurface;
+
+                  return (
+                    <div
+                      key={opt.surface}
+                      className={`rounded-lg border px-2.5 py-2 text-sm leading-snug ${
+                        isTarget
+                          ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950'
+                          : isChosen
+                            ? 'bg-rose-50/80 border-rose-300 text-rose-950'
+                            : 'bg-white border-slate-200 text-slate-800'
+                      }`}
+                    >
+                      <div className="flex items-baseline justify-between gap-2">
+                        <div className="flex flex-wrap items-baseline gap-1.5 font-jp">
+                          <span className="font-bold text-slate-900">{opt.kana}</span>
+                          {opt.surface !== opt.kana && (
+                            <span className="text-xs sm:text-sm text-slate-600">
+                              （{opt.surface}）
+                            </span>
+                          )}
+                        </div>
+                        {isTarget && (
+                          <span className="text-xs font-bold text-emerald-700 shrink-0">
+                            正解
+                          </span>
+                        )}
+                        {isChosen && !isTarget && (
+                          <span className="text-xs font-bold text-rose-700 shrink-0">
+                            誤選
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs sm:text-sm text-slate-700 mt-0.5">
+                        {opt.meaning}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           <button
