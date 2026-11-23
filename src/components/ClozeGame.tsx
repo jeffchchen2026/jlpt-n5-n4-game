@@ -230,53 +230,47 @@ export function ClozeGame({
               </div>
             )}
 
-            {/* All 4 options breakdown */}
+            {/* 3 distractor options breakdown (excluding correct answer) */}
             <div className="space-y-1.5 pt-1 border-t border-slate-200/80">
               <p className="text-xs sm:text-sm font-bold text-slate-700">
-                四個選項說明
+                其他三個選項說明
               </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
-                {options.map((opt) => {
-                  const isTarget = opt.surface === example.cloze.blankWord;
-                  const isChosen = opt.surface === selectedSurface;
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 sm:gap-2">
+                {options
+                  .filter((opt) => opt.surface !== example.cloze.blankWord)
+                  .map((opt) => {
+                    const isChosen = opt.surface === selectedSurface;
 
-                  return (
-                    <div
-                      key={opt.surface}
-                      className={`rounded-lg border px-2.5 py-2 text-sm leading-snug ${
-                        isTarget
-                          ? 'bg-emerald-50/80 border-emerald-300 text-emerald-950'
-                          : isChosen
+                    return (
+                      <div
+                        key={opt.surface}
+                        className={`rounded-lg border px-2.5 py-2 text-sm leading-snug ${
+                          isChosen
                             ? 'bg-rose-50/80 border-rose-300 text-rose-950'
                             : 'bg-white border-slate-200 text-slate-800'
-                      }`}
-                    >
-                      <div className="flex items-baseline justify-between gap-2">
-                        <div className="flex flex-wrap items-baseline gap-1.5 font-jp">
-                          <span className="font-bold text-slate-900">{opt.kana}</span>
-                          {opt.surface !== opt.kana && (
-                            <span className="text-xs sm:text-sm text-slate-600">
-                              （{opt.surface}）
+                        }`}
+                      >
+                        <div className="flex items-baseline justify-between gap-2">
+                          <div className="flex flex-wrap items-baseline gap-1 font-jp">
+                            <span className="font-bold text-slate-900">{opt.kana}</span>
+                            {opt.surface !== opt.kana && (
+                              <span className="text-xs sm:text-sm text-slate-600">
+                                （{opt.surface}）
+                              </span>
+                            )}
+                          </div>
+                          {isChosen && (
+                            <span className="text-xs font-bold text-rose-700 shrink-0">
+                              誤選
                             </span>
                           )}
                         </div>
-                        {isTarget && (
-                          <span className="text-xs font-bold text-emerald-700 shrink-0">
-                            正解
-                          </span>
-                        )}
-                        {isChosen && !isTarget && (
-                          <span className="text-xs font-bold text-rose-700 shrink-0">
-                            誤選
-                          </span>
-                        )}
+                        <p className="text-xs sm:text-sm text-slate-700 mt-0.5">
+                          {opt.meaning}
+                        </p>
                       </div>
-                      <p className="text-xs sm:text-sm text-slate-700 mt-0.5">
-                        {opt.meaning}
-                      </p>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
               </div>
             </div>
           </div>
